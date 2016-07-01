@@ -1,0 +1,78 @@
+
+db.albums.find({_id : "577538c024cae3d41e86ca78"})
+## Insert
+db.albums.insert ([
+    {
+        AlbumName: "Lee Konitz/Bob Brookmeyer in Paris",
+        Artist: "Lee Konitz",
+        Released: 1960,
+        Duration: 56,
+        Styles: ["Cool","Bop"]
+    },
+    {
+        AlbumName: "Compact Jazz: Dizzy Gillespie",
+        Artist: "Dizzy Gillespie",
+        Released: 1987,
+        Duration: 56,
+        Styles: ["Bop"]
+    },
+    {
+       AlbumName: "Brasil",
+       Artist: "Joao Gilberto",
+       Released: 1981,
+       Duration: 28,
+       Styles: ["Brazil"]
+     },
+     {
+        AlbumName: "Gretchen Parlato",
+        Artist: "Gretchen Parlato",
+        Released: 2005,
+        Duration: 39,
+        Styles: ["Pop", "Brazil"]
+      }
+ ])
+
+ ## Find
+
+ 1. Find the albums whose lead artist is Dizzy Gillespie.
+ db.getCollection('albums').find({Artist: "Dizzy Gillespie"})
+ 2. Find all albums in the style of Bop.
+ db.getCollection('albums').find({Styles: "Bop"})
+ 3. Find the albums with a total duration of less than 30 minutes long.
+ db.getCollection('albums').find({Duration: {$lt: 30}})
+ 4. Find all albums released in the 80s.
+ db.getCollection('albums').find({ $and: [{Released: {$gt: 1980}}, {Released: {$lt: 1990}}]})
+ or
+ db.albums.find({ $and: [{Released: {$gt: 1980}}, {Released: {$lt: 1990}}]})
+ 5. Find an album by its ID - you'll need to look up its ID first (the `_id` field of a document).
+ db.getCollection('albums').find({"_id": ObjectId("577538c024cae3d41e86ca77")})
+
+## Remove
+1. Remove one of the albums by its album name - with a remove statement, and then insert it again
+db.albums.remove({albumName: "Brasil"})
+2. Remove all the album in the 80s - with a remove statement, then insert them again.
+db.albums.remove({ $and: [{Released: {$gt: 1980}}, {Released: {$lt: 1990}}]})
+db.albums.find() -see the existing ones
+
+
+## upsert
+db.albums.update(
+    {
+     AlbumName: "My Foolish Heart: Live at Montreux"},
+    {
+      $set:{
+        AlbumName: "My Foolish Heart: Live at Montreux",
+        Artist: "Keith Jarrett",
+        Released: 2001,
+        Duration: 108,
+        Styles: ["Bop"]
+      }
+    },
+   {upsert: true}
+ )
+
+## Count
+1. Get the number of albums in the database in total.
+db.albums.count()
+2. Get the number of albums released in the 80s.
+db.albums.count({ $and: [{Released: {$gt: 1980}}, {Released: {$lt: 1990}}]})
